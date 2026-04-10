@@ -1,0 +1,35 @@
+package com.simulation.models;
+
+import com.simulation.core.PhysicalModel;
+
+/**
+ * Concrete physical model: Heat Transfer.
+ * Follows the 2D heat equation: dT/dt = alpha * (d2T/dx2 + d2T/dy2)
+ */
+public class HeatTransferModel extends PhysicalModel {
+    private final double thermalDiffusivity; // alpha
+
+    public HeatTransferModel(double thermalDiffusivity) {
+        this.thermalDiffusivity = thermalDiffusivity;
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("Initializing Heat Transfer Model. Alpha = " + thermalDiffusivity);
+    }
+
+    public double getThermalDiffusivity() {
+        return thermalDiffusivity;
+    }
+
+    @Override
+    public double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2) {
+        // Evaluate: alpha * laplacian
+        return thermalDiffusivity * (d2dx2 + d2dy2);
+    }
+
+    @Override
+    public String getName() {
+        return "Heat Transfer Model";
+    }
+}
