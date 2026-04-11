@@ -1,5 +1,4 @@
 package com.simulation.events;
-
 public class ConsoleLoggerObserver implements ISimulationObserver {
     @Override
     public void onEvent(SimulationEvent event) {

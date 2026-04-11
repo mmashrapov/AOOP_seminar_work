@@ -1,19 +1,10 @@
 package com.simulation.core;
-
 import com.simulation.data.Field;
-
-/**
- * Dirichlet Boundary Condition sets a constant specific value at boundary
- * nodes.
- */
 public class DirichletBoundary extends BoundaryCondition {
-
     private final double value;
-
     public DirichletBoundary(double value) {
         this.value = value;
     }
-
     @Override
     public void applyBoundaryCondition(Field<Double> field, double[][] nextData) {
         int nx = field.getSizeX();
