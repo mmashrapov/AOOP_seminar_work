@@ -20,14 +20,14 @@ public class AdaptiveDtPolicy implements ITimeStepPolicy {
     }
 
     @Override
-    public double next_dt(Field state, double t, double dt_prev) {
+    public double next_dt(Field<Double> state, double t, double dt_prev) {
         double maxVal = 0.0;
         int nx = state.getSizeX();
         int ny = state.getSizeY();
 
         for (int i = 0; i < nx; i++) {
             for (int j = 0; j < ny; j++) {
-                double val = Math.abs(state.getValue(i, j));
+                double val = Math.abs(state.getValue(i, j).doubleValue());
                 if (val > maxVal) {
                     maxVal = val;
                 }

@@ -15,16 +15,22 @@ import java.util.List;
 /**
  * Coordinates the model, strategy (solver), dt policy, and observers.
  * Driven entirely by a State Machine loop.
+ * 
+ * Memory Ownership (Seminar 9):
+ * - Controller OWNS: strategy, dtPolicy, domain, observer collections.
+ * - Controller SHARES: model (can be injected into multiple controllers).
+ * - Controller TRANSIENT: field (injected during run(), lifecycle managed
+ * externally).
  */
 public class SimulationController {
 
-    private PhysicalModel model;
+    private PhysicalModel<Double> model;
     private IStepperStrategy strategy;
     private ITimeStepPolicy dtPolicy;
     private SimulationDomain domain;
 
     private ISimulationState currentState;
-    private Field field;
+    private Field<Double> field;
 
     private final int totalSteps;
     private int currentStep;
@@ -33,7 +39,7 @@ public class SimulationController {
 
     private final List<ISimulationObserver> observers = new ArrayList<>();
 
-    public SimulationController(PhysicalModel initialModel, IStepperStrategy strategy, ITimeStepPolicy dtPolicy,
+    public SimulationController(PhysicalModel<Double> initialModel, IStepperStrategy strategy, ITimeStepPolicy dtPolicy,
             SimulationDomain domain, int totalSteps) {
         this.model = initialModel;
         this.strategy = strategy;
@@ -52,6 +58,16 @@ public class SimulationController {
 
     public void addObserver(ISimulationObserver observer) {
         observers.add(observer);
+    }
+
+    /** Memory Management: Allows freeing strong references to avoid leaks. */
+    public void removeObserver(ISimulationObserver observer) {
+        observers.remove(observer);
+    }
+
+    /** Free all observer references from heap collection. */
+    public void clearObservers() {
+        observers.clear();
     }
 
     public void publishEvent(SimulationEvent event) {
@@ -85,7 +101,7 @@ public class SimulationController {
     /**
      * Starts the main lifecycle.
      */
-    public void run(Field initialField) {
+    public void run(Field<Double> initialField) {
         this.field = initialField;
 
         // Trigger configured to transition into Initialized
@@ -103,11 +119,11 @@ public class SimulationController {
     }
 
     // --- Accessors/Mutators --- //
-    public void setModel(PhysicalModel newModel) {
+    public void setModel(PhysicalModel<Double> newModel) {
         this.model = newModel;
     }
 
-    public PhysicalModel getModel() {
+    public PhysicalModel<Double> getModel() {
         return model;
     }
 
@@ -127,7 +143,7 @@ public class SimulationController {
         return dtPolicy;
     }
 
-    public Field getField() {
+    public Field<Double> getField() {
         return field;
     }
 

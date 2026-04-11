@@ -5,7 +5,7 @@ import com.simulation.core.Solver;
 import com.simulation.core.PhysicalModel;
 import com.simulation.core.SimulationDomain;
 import com.simulation.data.Field;
-import com.simulation.domain.GridDomain;
+import com.simulation.domain.Grid2D;
 import com.simulation.models.CompositePhysicalModel;
 import com.simulation.models.HeatTransferModel;
 import com.simulation.models.SinglePhaseFluidFlowModel;
@@ -35,24 +35,24 @@ public class FrameworkTests {
 
         // Setup shared environment
         int size = 5;
-        SimulationDomain domain = new GridDomain(size, size, 1.0, 1.0);
+        SimulationDomain domain = new Grid2D(size, size, 1.0, 1.0);
         double dt = 0.5;
         double alpha = 0.1;
 
         // 1. Native Approach
-        Field nativeField = new Field(size, size, 0.0);
+        Field<Double> nativeField = new Field<Double>(size, size, 0.0);
         nativeField.setValue(2, 2, 100.0); // Hotspot in center
 
-        Solver nativeSolver = new ExplicitEulerSolver(domain);
-        PhysicalModel nativeModel = new HeatTransferModel(alpha);
+        Solver<Double> nativeSolver = new ExplicitEulerSolver(domain);
+        PhysicalModel<Double> nativeModel = new HeatTransferModel(alpha);
 
         nativeSolver.step(nativeField, dt, nativeModel);
 
         // 2. Adapter (Legacy) Approach
-        Field legacyField = new Field(size, size, 0.0);
+        Field<Double> legacyField = new Field<Double>(size, size, 0.0);
         legacyField.setValue(2, 2, 100.0);
 
-        Solver adapterSolver = new LegacySolverAdapter(domain, alpha);
+        Solver<Double> adapterSolver = new LegacySolverAdapter(domain, alpha);
         // Note: the Legacy adapter acts as a solver but internally invokes
         // LegacyHeatModule.
         // It bypasses the PhysicalModel logic, so we pass null (or a dummy)
@@ -61,7 +61,7 @@ public class FrameworkTests {
         // Compare nodes to ensure mappings mirror each other
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                assertEquals(nativeField.getValue(i, j), legacyField.getValue(i, j), 1e-6,
+                assertEquals(nativeField.getValue(i, j).doubleValue(), legacyField.getValue(i, j).doubleValue(), 1e-6,
                         String.format("Mismatch at node (%d, %d)", i, j));
             }
         }
@@ -71,8 +71,8 @@ public class FrameworkTests {
     private static void testCompositeExecution() {
         System.out.println("Running testCompositeExecution...");
 
-        PhysicalModel heat = new HeatTransferModel(1.0);
-        PhysicalModel flow = new SinglePhaseFluidFlowModel(2.0);
+        PhysicalModel<Double> heat = new HeatTransferModel(1.0);
+        PhysicalModel<Double> flow = new SinglePhaseFluidFlowModel(2.0);
 
         CompositePhysicalModel composite = new CompositePhysicalModel();
         composite.addModel(heat);

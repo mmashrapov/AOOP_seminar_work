@@ -6,7 +6,7 @@ import com.simulation.core.PhysicalModel;
  * Concrete physical model: Heat Transfer.
  * Follows the 2D heat equation: dT/dt = alpha * (d2T/dx2 + d2T/dy2)
  */
-public class HeatTransferModel extends PhysicalModel {
+public class HeatTransferModel extends PhysicalModel<Double> {
     private final double thermalDiffusivity; // alpha
 
     public HeatTransferModel(double thermalDiffusivity) {
@@ -23,7 +23,7 @@ public class HeatTransferModel extends PhysicalModel {
     }
 
     @Override
-    public double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2) {
+    public Double computeTimeDerivative(Double currentVal, Double ddx, Double ddy, Double d2dx2, Double d2dy2) {
         // Evaluate: alpha * laplacian
         return thermalDiffusivity * (d2dx2 + d2dy2);
     }

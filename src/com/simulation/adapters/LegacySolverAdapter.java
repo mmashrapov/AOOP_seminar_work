@@ -10,7 +10,7 @@ import com.simulation.legacy.LegacyHeatModule;
  * Adapter that makes the legacy module usable through the framework interfaces.
  * Complies with the Adapter Structural Pattern.
  */
-public class LegacySolverAdapter extends Solver {
+public class LegacySolverAdapter extends Solver<Double> {
 
     private final SimulationDomain domain;
     private final double alpha; // We know the legacy model requires this specifically
@@ -21,7 +21,7 @@ public class LegacySolverAdapter extends Solver {
     }
 
     @Override
-    public void step(Field field, double dt, PhysicalModel model) {
+    public void step(Field<Double> field, double dt, PhysicalModel<Double> model) {
         int nx = field.getSizeX();
         int ny = field.getSizeY();
         double dx = domain.getDx();
@@ -31,7 +31,7 @@ public class LegacySolverAdapter extends Solver {
         double[][] rawArray = new double[nx][ny];
         for (int i = 0; i < nx; i++) {
             for (int j = 0; j < ny; j++) {
-                rawArray[i][j] = field.getValue(i, j);
+                rawArray[i][j] = field.getValue(i, j).doubleValue();
             }
         }
 
@@ -39,6 +39,12 @@ public class LegacySolverAdapter extends Solver {
         LegacyHeatModule.legacy_heat_step(rawArray, nx, ny, dx, dy, dt, alpha);
 
         // 3. Translate raw arrays back to State/Field
-        field.swapData(rawArray);
+        Number[][] newDataObj = new Number[nx][ny];
+        for (int i = 0; i < nx; i++) {
+            for (int j = 0; j < ny; j++) {
+                newDataObj[i][j] = rawArray[i][j];
+            }
+        }
+        field.swapData(newDataObj);
     }
 }

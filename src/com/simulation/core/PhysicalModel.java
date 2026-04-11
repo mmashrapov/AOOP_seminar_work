@@ -7,7 +7,7 @@ package com.simulation.core;
  * - Open/Closed & Liskov Substitution: The solver doesn't need to check types,
  * it just passes spatial derivatives and current state.
  */
-public abstract class PhysicalModel extends SimulationComponent {
+public abstract class PhysicalModel<T extends Number> extends SimulationComponent {
     /**
      * Computes the time derivative (rate of change) for the current node based on
      * spatial derivatives.
@@ -22,7 +22,7 @@ public abstract class PhysicalModel extends SimulationComponent {
      * @param d2dy2      Second derivative with respect to y.
      * @return The computed rate of change (e.g., dT/dt, dC/dt).
      */
-    public abstract double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2);
+    public abstract T computeTimeDerivative(T currentVal, T ddx, T ddy, T d2dx2, T d2dy2);
 
     /**
      * Gets the name of the physical model.

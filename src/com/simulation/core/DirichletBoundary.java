@@ -15,7 +15,7 @@ public class DirichletBoundary extends BoundaryCondition {
     }
 
     @Override
-    public void applyBoundaryCondition(Field field, double[][] nextData) {
+    public void applyBoundaryCondition(Field<Double> field, double[][] nextData) {
         int nx = field.getSizeX();
         int ny = field.getSizeY();
         for (int i = 0; i < nx; i++) {

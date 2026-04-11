@@ -11,28 +11,28 @@ import java.util.List;
  * Coupling).
  * Complies with the Composite Structural Pattern.
  */
-public class CompositePhysicalModel extends PhysicalModel {
+public class CompositePhysicalModel extends PhysicalModel<Double> {
 
-    private final List<PhysicalModel> models;
+    private final List<PhysicalModel<Double>> models;
 
     public CompositePhysicalModel() {
         this.models = new ArrayList<>();
     }
 
-    public void addModel(PhysicalModel model) {
+    public void addModel(PhysicalModel<Double> model) {
         models.add(model);
     }
 
-    public void removeModel(PhysicalModel model) {
+    public void removeModel(PhysicalModel<Double> model) {
         models.remove(model);
     }
 
     @Override
-    public double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2) {
+    public Double computeTimeDerivative(Double currentVal, Double ddx, Double ddy, Double d2dx2, Double d2dy2) {
         double totalTimeDerivative = 0.0;
 
         // Sum up the independent contributions of each physical phenomenon
-        for (PhysicalModel model : models) {
+        for (PhysicalModel<Double> model : models) {
             totalTimeDerivative += model.computeTimeDerivative(currentVal, ddx, ddy, d2dx2, d2dy2);
         }
 

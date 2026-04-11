@@ -14,7 +14,7 @@ public class FixedDtPolicy implements ITimeStepPolicy {
     }
 
     @Override
-    public double next_dt(Field state, double t, double dt_prev) {
+    public double next_dt(Field<Double> state, double t, double dt_prev) {
         return fixedDt;
     }
 }

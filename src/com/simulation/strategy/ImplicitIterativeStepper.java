@@ -20,7 +20,7 @@ public class ImplicitIterativeStepper implements IStepperStrategy {
     }
 
     @Override
-    public void step(PhysicalModel model, Field state, double dt) {
+    public void step(PhysicalModel<Double> model, Field<Double> state, double dt) {
         int nx = state.getSizeX();
         int ny = state.getSizeY();
         double dx = domain.getDx();
@@ -69,6 +69,12 @@ public class ImplicitIterativeStepper implements IStepperStrategy {
             nextData[nx - 1][j] = state.getValue(nx - 1, j);
         }
 
-        state.swapData(nextData);
+        Number[][] newDataObj = new Number[nx][ny];
+        for (int i = 0; i < nx; i++) {
+            for (int j = 0; j < ny; j++) {
+                newDataObj[i][j] = nextData[i][j];
+            }
+        }
+        state.swapData(newDataObj);
     }
 }

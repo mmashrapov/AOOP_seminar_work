@@ -9,7 +9,7 @@ import com.simulation.data.Field;
  * This class exists to fulfill the advanced inheritance hierarchy requirement
  * exactly as prescribed (Solver -> ExplicitSolver, ImplicitSolver).
  */
-public class ImplicitSolver extends com.simulation.core.Solver {
+public class ImplicitSolver extends com.simulation.core.Solver<Double> {
 
     private final SimulationDomain domain;
 
@@ -18,7 +18,7 @@ public class ImplicitSolver extends com.simulation.core.Solver {
     }
 
     @Override
-    public void step(Field field, double dt, PhysicalModel model) {
+    public void step(Field<Double> field, double dt, PhysicalModel<Double> model) {
         // In a real scenario, this would use a matrix solver or iterative method,
         // like the logic in ImplicitIterativeStepper.
         System.out.println("ImplicitSolver step called. (Stub for Method Overriding Demo)");

@@ -15,6 +15,6 @@ public interface ITimeStepPolicy {
      * @param dt_prev The previously used timestep.
      * @return The timestep to use for the next step.
      */
-    double next_dt(Field state, double t, double dt_prev);
+    double next_dt(Field<Double> state, double t, double dt_prev);
 }
 /** ocp */

@@ -5,7 +5,7 @@ import com.simulation.core.PhysicalModel;
 import com.simulation.core.SimulationController;
 import com.simulation.core.SimulationDomain;
 import com.simulation.data.Field;
-import com.simulation.domain.GridDomain;
+import com.simulation.domain.Grid2D;
 
 import com.simulation.models.HeatTransferModel;
 import com.simulation.models.SinglePhaseFluidFlowModel;
@@ -32,13 +32,13 @@ public class Main {
         public static void main(String[] args) {
                 int sizeX = 10;
                 int sizeY = 10;
-                SimulationDomain domain = new GridDomain(sizeX, sizeY, 0.1, 0.1);
+                SimulationDomain domain = new Grid2D(sizeX, sizeY, 0.1, 0.1);
 
                 String outDir = "simulation_results";
                 new File(outDir).mkdirs();
                 OutputHandler csvOutput = new CsvOutputHandler(outDir);
 
-                Field initialField = new Field(sizeX, sizeY, 0.0);
+                Field<Double> initialField = new Field<Double>(sizeX, sizeY, 0.0);
                 initialField.setValue(sizeX / 2, sizeY / 2, 100.0); // High source
 
                 int steps = 20;
@@ -67,14 +67,14 @@ public class Main {
                 // 4. Run State Machine Execution
                 // Controller transitions Configured -> Initialized -> Running -> ...
                 System.out.println("\n--- Scenario 1: Adaptive Heat with State & Observer ---");
-                controller.run(new Field(initialField));
+                controller.run(new Field<Double>(initialField));
 
                 // --- Interaction 3: OperatorSplittingStepper MultiPhysics --- //
                 System.out.println("\n--- Scenario 2: Operator Splitting Multi-Physics ---");
 
                 IStepperStrategy operatorSplitStrategy = new OperatorSplittingStepper(
                                 new ExplicitEulerStepper(domain),
-                                Arrays.<PhysicalModel>asList(new HeatTransferModel(0.01),
+                                Arrays.<PhysicalModel<Double>>asList(new HeatTransferModel(0.01),
                                                 new SinglePhaseFluidFlowModel(0.02)));
                 ITimeStepPolicy fixedDtPolicy = new FixedDtPolicy(0.1);
 
@@ -86,6 +86,6 @@ public class Main {
                                 steps);
                 splitController.addObserver(new ConsoleLoggerObserver());
 
-                splitController.run(new Field(initialField));
+                splitController.run(new Field<Double>(initialField));
         }
 }

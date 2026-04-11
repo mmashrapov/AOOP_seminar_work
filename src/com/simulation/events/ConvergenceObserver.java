@@ -7,7 +7,7 @@ public class ConvergenceObserver implements ISimulationObserver {
 
     private final double convergenceTolerance;
     private final double slowConvergenceThreshold;
-    private Field lastFieldState = null;
+    private Field<Double> lastFieldState = null;
 
     public ConvergenceObserver(double convergenceTolerance, double slowConvergenceThreshold) {
         this.convergenceTolerance = convergenceTolerance;
@@ -18,10 +18,10 @@ public class ConvergenceObserver implements ISimulationObserver {
     public void onEvent(SimulationEvent event) {
         if (event.getType() == EventType.ON_AFTER_STEP) {
             SimulationController controller = event.getSource();
-            Field currentField = controller.getField();
+            Field<Double> currentField = controller.getField();
 
             if (lastFieldState == null) {
-                lastFieldState = new Field(currentField);
+                lastFieldState = new Field<Double>(currentField);
                 return;
             }
 
@@ -41,18 +41,18 @@ public class ConvergenceObserver implements ISimulationObserver {
             }
 
             // Update state
-            lastFieldState = new Field(currentField);
+            lastFieldState = new Field<Double>(currentField);
         }
     }
 
-    private double calculateMaxDelta(Field oldField, Field newField) {
+    private double calculateMaxDelta(Field<Double> oldField, Field<Double> newField) {
         double maxDelta = 0.0;
         int nx = oldField.getSizeX();
         int ny = oldField.getSizeY();
 
         for (int i = 0; i < nx; i++) {
             for (int j = 0; j < ny; j++) {
-                double delta = Math.abs(oldField.getValue(i, j) - newField.getValue(i, j));
+                double delta = Math.abs(oldField.getValue(i, j).doubleValue() - newField.getValue(i, j).doubleValue());
                 if (delta > maxDelta) {
                     maxDelta = delta;
                 }

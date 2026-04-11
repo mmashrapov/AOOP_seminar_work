@@ -11,7 +11,7 @@ import com.simulation.data.Field;
  * - Open/Closed: Relies entirely on PhysicalModel interface, uses no instanceof
  * checks.
  */
-public class ExplicitEulerSolver extends com.simulation.core.Solver {
+public class ExplicitEulerSolver extends com.simulation.core.Solver<Double> {
 
     private final SimulationDomain domain;
     private final java.util.List<com.simulation.core.BoundaryCondition> boundaryConditions;
@@ -28,7 +28,7 @@ public class ExplicitEulerSolver extends com.simulation.core.Solver {
     }
 
     @Override
-    public void step(Field state, double dt, PhysicalModel model) {
+    public void step(Field<Double> state, double dt, PhysicalModel<Double> model) {
         int nx = state.getSizeX();
         int ny = state.getSizeY();
         double dx = domain.getDx();
@@ -39,11 +39,11 @@ public class ExplicitEulerSolver extends com.simulation.core.Solver {
         // Central difference stencils for INNER nodes
         for (int i = 1; i < nx - 1; i++) {
             for (int j = 1; j < ny - 1; j++) {
-                double currentVal = state.getValue(i, j);
-                double left = state.getValue(i - 1, j);
-                double right = state.getValue(i + 1, j);
-                double up = state.getValue(i, j + 1);
-                double down = state.getValue(i, j - 1);
+                double currentVal = state.getValue(i, j).doubleValue();
+                double left = state.getValue(i - 1, j).doubleValue();
+                double right = state.getValue(i + 1, j).doubleValue();
+                double up = state.getValue(i, j + 1).doubleValue();
+                double down = state.getValue(i, j - 1).doubleValue();
 
                 double ddx = (right - left) / (2 * dx);
                 double ddy = (up - down) / (2 * dy);
@@ -62,7 +62,7 @@ public class ExplicitEulerSolver extends com.simulation.core.Solver {
             for (int i = 0; i < nx; i++) {
                 for (int j = 0; j < ny; j++) {
                     if (i == 0 || i == nx - 1 || j == 0 || j == ny - 1) {
-                        nextData[i][j] = state.getValue(i, j);
+                        nextData[i][j] = state.getValue(i, j).doubleValue();
                     }
                 }
             }
@@ -72,6 +72,12 @@ public class ExplicitEulerSolver extends com.simulation.core.Solver {
             }
         }
 
-        state.swapData(nextData);
+        Number[][] newDataObj = new Number[nx][ny];
+        for (int i = 0; i < nx; i++) {
+            for (int j = 0; j < ny; j++) {
+                newDataObj[i][j] = nextData[i][j];
+            }
+        }
+        state.swapData(newDataObj);
     }
 }

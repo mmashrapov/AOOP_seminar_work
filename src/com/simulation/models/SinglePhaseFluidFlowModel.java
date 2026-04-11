@@ -7,7 +7,7 @@ import com.simulation.core.PhysicalModel;
  * Simulates a simple diffusion equation (e.g., pressure diffusion).
  * dP/dt = c * (d2P/dx2 + d2P/dy2) where c is diffusivity.
  */
-public class SinglePhaseFluidFlowModel extends PhysicalModel {
+public class SinglePhaseFluidFlowModel extends PhysicalModel<Double> {
     private final double fluidDiffusivity;
 
     public SinglePhaseFluidFlowModel(double fluidDiffusivity) {
@@ -19,7 +19,7 @@ public class SinglePhaseFluidFlowModel extends PhysicalModel {
     }
 
     @Override
-    public double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2) {
+    public Double computeTimeDerivative(Double currentVal, Double ddx, Double ddy, Double d2dx2, Double d2dy2) {
         return fluidDiffusivity * (d2dx2 + d2dy2);
     }
 

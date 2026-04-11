@@ -7,7 +7,7 @@ import com.simulation.core.PhysicalModel;
  * Simulates advection-dispersion with some simple reaction.
  * dC/dt = D * (d2C/dx2 + d2C/dy2) - k * C
  */
-public class ReactiveTransportModel extends PhysicalModel {
+public class ReactiveTransportModel extends PhysicalModel<Double> {
     private final double diffusionCoefficient; // D
     private final double reactionRate; // k
 
@@ -25,7 +25,7 @@ public class ReactiveTransportModel extends PhysicalModel {
     }
 
     @Override
-    public double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2) {
+    public Double computeTimeDerivative(Double currentVal, Double ddx, Double ddy, Double d2dx2, Double d2dy2) {
         // D * Laplacian - k * C
         return diffusionCoefficient * (d2dx2 + d2dy2) - reactionRate * currentVal;
     }

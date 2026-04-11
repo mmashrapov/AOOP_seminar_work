@@ -7,7 +7,7 @@ import com.simulation.core.PhysicalModel;
  * For standard Euler integration without state separation, we treat it as
  * a basic form or proxy derivation for the assignment.
  */
-public class WavePropagationModel extends PhysicalModel {
+public class WavePropagationModel extends PhysicalModel<Double> {
     private final double waveSpeed;
 
     public WavePropagationModel(double waveSpeed) {
@@ -20,7 +20,7 @@ public class WavePropagationModel extends PhysicalModel {
     }
 
     @Override
-    public double computeTimeDerivative(double currentVal, double ddx, double ddy, double d2dx2, double d2dy2) {
+    public Double computeTimeDerivative(Double currentVal, Double ddx, Double ddy, Double d2dx2, Double d2dy2) {
         // Evaluate: c^2 * laplacian
         return (waveSpeed * waveSpeed) * (d2dx2 + d2dy2);
     }

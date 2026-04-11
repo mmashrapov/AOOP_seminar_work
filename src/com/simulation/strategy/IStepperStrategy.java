@@ -16,5 +16,5 @@ public interface IStepperStrategy {
      * @param state The field state to mutate.
      * @param dt    The explicit time step to advance by.
      */
-    void step(PhysicalModel model, Field state, double dt);
+    void step(PhysicalModel<Double> model, Field<Double> state, double dt);
 }

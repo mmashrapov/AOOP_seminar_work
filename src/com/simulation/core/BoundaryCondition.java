@@ -10,5 +10,5 @@ public abstract class BoundaryCondition extends SimulationComponent {
     /**
      * Applies the boundary condition to the given data array.
      */
-    public abstract void applyBoundaryCondition(Field field, double[][] nextData);
+    public abstract void applyBoundaryCondition(Field<Double> field, double[][] nextData);
 }

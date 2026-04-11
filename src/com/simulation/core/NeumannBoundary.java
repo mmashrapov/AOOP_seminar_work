@@ -15,7 +15,7 @@ public class NeumannBoundary extends BoundaryCondition {
     }
 
     @Override
-    public void applyBoundaryCondition(Field field, double[][] nextData) {
+    public void applyBoundaryCondition(Field<Double> field, double[][] nextData) {
         int nx = field.getSizeX();
         int ny = field.getSizeY();
         // Simplified Neumann implementation (copy inner node plus flux)
