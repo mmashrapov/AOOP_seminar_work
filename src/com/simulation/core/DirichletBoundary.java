@@ -9,6 +9,9 @@ public class DirichletBoundary extends BoundaryCondition {
     public void applyBoundaryCondition(Field<Double> field, double[][] nextData) {
         int nx = field.getSizeX();
         int ny = field.getSizeY();
+        if (nextData == null || nextData.length < nx || (nx > 0 && nextData[0].length < ny)) {
+            throw new com.simulation.exceptions.BoundaryConditionException("nextData array does not encompass field bounds", "DirichletBoundary", 0, 0.0, nx + "x" + ny);
+        }
         for (int i = 0; i < nx; i++) {
             for (int j = 0; j < ny; j++) {
                 if (i == 0 || i == nx - 1 || j == 0 || j == ny - 1) {

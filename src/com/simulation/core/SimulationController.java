@@ -23,6 +23,10 @@ public class SimulationController {
     private final List<ISimulationObserver> observers = new ArrayList<>();
     public SimulationController(PhysicalModel<Double> initialModel, IStepperStrategy strategy, ITimeStepPolicy dtPolicy,
             SimulationDomain domain, int totalSteps) {
+        if (totalSteps <= 0 || dtPolicy == null || domain == null) {
+            throw new com.simulation.exceptions.ConfigurationException(
+                "Invalid simulation configuration parameters.", "SimulationController", 0, 0.0, "Unknown");
+        }
         this.model = initialModel;
         this.strategy = strategy;
         this.dtPolicy = dtPolicy;
@@ -102,6 +106,12 @@ public class SimulationController {
     }
     public double getCurrentDt() {
         return currentDt;
+    }
+    public void setDt(double dt) {
+        this.currentDt = dt;
+    }
+    public SimulationDomain getDomain() {
+        return domain;
     }
     public ISimulationState getCurrentState() {
         return currentState;

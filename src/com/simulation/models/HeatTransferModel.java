@@ -7,6 +7,11 @@ public class HeatTransferModel extends PhysicalModel<Double> {
     }
     @Override
     public void initialize() {
+        if (thermalDiffusivity <= 0) {
+            throw new com.simulation.exceptions.InitializationException(
+                "Thermal diffusivity must be positive. Got: " + thermalDiffusivity, 
+                "HeatTransferModel", 0, 0.0, "Unknown");
+        }
         System.out.println("Initializing Heat Transfer Model. Alpha = " + thermalDiffusivity);
     }
     public double getThermalDiffusivity() {

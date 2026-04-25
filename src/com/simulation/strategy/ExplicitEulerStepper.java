@@ -14,6 +14,15 @@ public class ExplicitEulerStepper implements IStepperStrategy {
         double dx = domain.getDx();
         double dy = domain.getDy();
         double[][] nextData = new double[nx][ny];
+        double alpha = 0.0;
+        if (model instanceof com.simulation.models.HeatTransferModel) {
+            alpha = ((com.simulation.models.HeatTransferModel) model).getThermalDiffusivity();
+            if (dt * alpha / (dx * dx) > 0.5) {
+                throw new com.simulation.exceptions.StabilityException(
+                    "CFL stability condition violated. dt=" + dt + ", dx=" + dx + ", alpha=" + alpha, 
+                    model.getName(), 0, 0.0, nx + "x" + ny);
+            }
+        }
         for (int i = 0; i < nx; i++) {
             for (int j = 0; j < ny; j++) {
                 if (i == 0 || i == nx - 1 || j == 0 || j == ny - 1) {
@@ -30,6 +39,11 @@ public class ExplicitEulerStepper implements IStepperStrategy {
                     double d2dy2 = (up - 2 * currentVal + down) / (dy * dy);
                     double timeDerivative = model.computeTimeDerivative(currentVal, ddx, ddy, d2dx2, d2dy2);
                     nextData[i][j] = currentVal + timeDerivative * dt;
+                    if (Double.isNaN(nextData[i][j]) || Double.isInfinite(nextData[i][j])) {
+                        throw new com.simulation.exceptions.NumericalException(
+                            "Numerical instability detected at (" + i + ", " + j + "): " + nextData[i][j], 
+                            model.getName(), 0, 0.0, nx + "x" + ny);
+                    }
                 }
             }
         }

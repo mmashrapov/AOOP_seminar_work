@@ -20,7 +20,10 @@ public class ImplicitIterativeStepper implements IStepperStrategy {
                 nextData[i][j] = state.getValue(i, j);
             }
         }
+        double threshold = 1e-5;
+        double maxDelta = 0.0;
         for (int iter = 0; iter < maxIterations; iter++) {
+            maxDelta = 0.0;
             for (int i = 1; i < nx - 1; i++) {
                 for (int j = 1; j < ny - 1; j++) {
                     double currentVal = nextData[i][j];
@@ -33,9 +36,19 @@ public class ImplicitIterativeStepper implements IStepperStrategy {
                     double d2dx2 = (right - 2 * currentVal + left) / (dx * dx);
                     double d2dy2 = (up - 2 * currentVal + down) / (dy * dy);
                     double timeDerivative = model.computeTimeDerivative(currentVal, ddx, ddy, d2dx2, d2dy2);
-                    nextData[i][j] = state.getValue(i, j) + timeDerivative * dt;
+                    double newVal = state.getValue(i, j) + timeDerivative * dt;
+                    maxDelta = Math.max(maxDelta, Math.abs(newVal - nextData[i][j]));
+                    nextData[i][j] = newVal;
                 }
             }
+            if (maxDelta < threshold) {
+                break;
+            }
+        }
+        if (maxDelta >= threshold || Double.isNaN(maxDelta)) {
+             throw new com.simulation.exceptions.ConvergenceException(
+                 "Implicit solver failed to converge after " + maxIterations + " iterations. Max delta=" + maxDelta,
+                 model.getName(), 0, 0.0, nx + "x" + ny);
         }
         for (int i = 0; i < nx; i++) {
             nextData[i][0] = state.getValue(i, 0);

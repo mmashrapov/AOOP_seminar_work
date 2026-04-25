@@ -25,7 +25,8 @@ public class CsvOutputHandler extends OutputHandler {
                 writer.println();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new com.simulation.exceptions.IOFailureException(
+                "Failed to write CSV output to " + fileName, e, "CsvOutputHandler", step, 0.0, field.getSizeX() + "x" + field.getSizeY());
         }
     }
 }
